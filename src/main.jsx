@@ -52,10 +52,20 @@ const Users = makeIcon('group');
 const WalletCards = makeIcon('payments');
 const X = makeIcon('close');
 
+const SUPABASE_URL = 'https://gnrxaxpwkscfwbuskekb.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImducnhheHB3a3NjZndidXNrZWtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5OTIyMzAsImV4cCI6MjA5NTU2ODIzMH0.E078wlvi0IHCJvfRzQdxQoG51O1LYgqMNRzrXWcv2fQ';
+const supabaseClient = window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 const roles = {
   admin: 'Administrador',
   client: 'Cliente',
   driver: 'Transportista'
+};
+
+const demoCredentials = {
+  admin: { email: 'admin@ambiental.demo', password: 'Ambiental2026!' },
+  client: { email: 'cliente@ambiental.demo', password: 'Ambiental2026!' },
+  driver: { email: 'conductor@ambiental.demo', password: 'Ambiental2026!' }
 };
 
 const routeStops = [
@@ -104,27 +114,145 @@ function App() {
   const [page, setPage] = useState('landing');
   const [role, setRole] = useState('admin');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [session, setSession] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [remoteData, setRemoteData] = useState({ routes: pickups, manifests, routeStops });
+  const [authError, setAuthError] = useState('');
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   }, [page]);
 
+  useEffect(() => {
+    if (!supabaseClient) return;
+    supabaseClient.auth.getSession().then(({ data }) => {
+      if (data.session) hydrateSession(data.session);
+    });
+    const { data: listener } = supabaseClient.auth.onAuthStateChange((_event, nextSession) => {
+      setSession(nextSession);
+      if (nextSession) hydrateSession(nextSession);
+      if (!nextSession) {
+        setProfile(null);
+        setRemoteData({ routes: pickups, manifests, routeStops });
+      }
+    });
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  async function hydrateSession(nextSession) {
+    setSession(nextSession);
+    const { data: profileRow } = await supabaseClient
+      .from('profiles')
+      .select('*')
+      .eq('id', nextSession.user.id)
+      .maybeSingle();
+    if (profileRow) {
+      setProfile(profileRow);
+      setRole(profileRow.role);
+    }
+    await loadRemoteData();
+  }
+
+  async function loadRemoteData() {
+    if (!supabaseClient) return;
+    const [{ data: routesData }, { data: manifestsData }, { data: stopsData }] = await Promise.all([
+      supabaseClient.from('routes').select('*').order('code'),
+      supabaseClient.from('manifests').select('*, clients(name)').order('collected_at', { ascending: false }),
+      supabaseClient.from('route_stops').select('*').order('stop_order')
+    ]);
+
+    setRemoteData({
+      routes: routesData?.map((route) => ({
+        id: route.id,
+        code: route.code,
+        zone: route.zone,
+        driver: route.driver_name,
+        stops: stopsData?.filter((stop) => stop.route_id === route.id).length || 0,
+        progress: route.progress
+      })) || pickups,
+      manifests: manifestsData?.map((manifest) => ({
+        id: manifest.id,
+        client: manifest.clients?.name || 'Cliente',
+        type: manifest.waste_type,
+        weight: `${Number(manifest.quantity).toLocaleString('es-CO')} ${manifest.unit}`,
+        status: normalizeStatus(manifest.status),
+        date: new Date(manifest.collected_at).toLocaleDateString('es-CO', { day: '2-digit', month: 'short' })
+      })) || manifests,
+      routeStops: stopsData?.map((stop) => ({ name: stop.name, address: stop.address, status: stop.status })) || routeStops
+    });
+  }
+
+  async function signIn(email, password) {
+    setAuthError('');
+    if (!supabaseClient) {
+      setAuthError('Supabase no cargó en el navegador. Revisa la conexión.');
+      return;
+    }
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error) {
+      setAuthError(error.message);
+      return;
+    }
+    await hydrateSession(data.session);
+    const nextRole = data.user.user_metadata?.role || role;
+    setRole(nextRole);
+    setPage(nextRole === 'driver' ? 'driver' : nextRole === 'client' ? 'client' : 'admin');
+  }
+
+  async function signOut() {
+    if (supabaseClient) await supabaseClient.auth.signOut();
+    setSession(null);
+    setProfile(null);
+    setPage('landing');
+  }
+
+  async function completeManifest(payload) {
+    if (!supabaseClient || !session) return { error: 'Debes iniciar sesión para guardar el manifiesto.' };
+    const manifestId = `MNF-${Math.floor(1000 + Math.random() * 8999)}`;
+    const { error } = await supabaseClient.from('manifests').insert({
+      id: manifestId,
+      client_id: '11111111-1111-4111-8111-111111111111',
+      route_id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+      waste_type: payload.wasteType,
+      quantity: payload.quantity,
+      unit: 'kg',
+      amount_cop: payload.amount,
+      status: 'certified',
+      created_by: session.user.id
+    });
+    if (!error) await loadRemoteData();
+    return { error: error?.message, id: manifestId };
+  }
+
   const goWorkspace = (nextRole = role) => {
+    if (!session) {
+      setRole(nextRole);
+      setPage('login');
+      return;
+    }
     setRole(nextRole);
     setPage(nextRole === 'driver' ? 'driver' : nextRole === 'client' ? 'client' : 'admin');
     setMenuOpen(false);
   };
 
-  const nav = { page, setPage, role, setRole, goWorkspace, menuOpen, setMenuOpen };
+  const nav = { page, setPage, role, setRole, goWorkspace, menuOpen, setMenuOpen, signIn, signOut, session, profile, authError };
 
   if (page === 'landing') return <Landing nav={nav} />;
   if (page === 'login') return <Login nav={nav} />;
-  if (page === 'driver') return <DriverApp nav={nav} />;
+  if (page === 'driver') return <DriverApp nav={nav} data={remoteData} onCompleteManifest={completeManifest} />;
   return (
     <AppShell nav={nav}>
-      {page === 'client' ? <ClientPortal /> : <AdminDashboard />}
+      {page === 'client' ? <ClientPortal data={remoteData} /> : <AdminDashboard data={remoteData} />}
     </AppShell>
   );
+}
+
+function normalizeStatus(status) {
+  return {
+    certified: 'Certificado',
+    in_transit: 'En tránsito',
+    pending: 'Pendiente'
+  }[status] || status;
 }
 
 function Landing({ nav }) {
@@ -198,10 +326,18 @@ function ModuleCard({ icon: Icon, title, text, featured = false }) {
 
 function Login({ nav }) {
   const [selectedRole, setSelectedRole] = useState(nav.role);
+  const [email, setEmail] = useState(demoCredentials[nav.role].email);
+  const [password, setPassword] = useState(demoCredentials[nav.role].password);
+
+  function chooseRole(key) {
+    setSelectedRole(key);
+    setEmail(demoCredentials[key].email);
+    setPassword(demoCredentials[key].password);
+  }
 
   function submit(event) {
     event.preventDefault();
-    nav.goWorkspace(selectedRole);
+    nav.signIn(email, password);
   }
 
   return (
@@ -221,12 +357,13 @@ function Login({ nav }) {
           <p>Selecciona un rol para entrar a la experiencia del MVP.</p>
           <div className="role-switcher">
             {Object.entries(roles).map(([key, label]) => (
-              <button className={selectedRole === key ? 'active' : ''} key={key} onClick={() => setSelectedRole(key)} type="button">{label}</button>
+              <button className={selectedRole === key ? 'active' : ''} key={key} onClick={() => chooseRole(key)} type="button">{label}</button>
             ))}
           </div>
           <form onSubmit={submit}>
-            <label>Correo electrónico<input defaultValue="usuario@empresa.com" type="email" /></label>
-            <label>Contraseña<input defaultValue="ambiental" type="password" /></label>
+            <label>Correo electrónico<input onChange={(event) => setEmail(event.target.value)} type="email" value={email} /></label>
+            <label>Contraseña<input onChange={(event) => setPassword(event.target.value)} type="password" value={password} /></label>
+            {nav.authError && <p className="form-error">{nav.authError}</p>}
             <button className="button primary full" type="submit">Iniciar sesión <ArrowRight size={18} /></button>
           </form>
         </div>
@@ -269,7 +406,7 @@ function AppShell({ children, nav }) {
           <div className="workspace-actions">
             <IconButton label="Notificaciones"><Bell size={19} /></IconButton>
             <button className="role-pill" onClick={() => nav.setPage('login')}><UserCircle size={18} /> {roles[nav.role]}</button>
-            <IconButton label="Salir" onClick={() => nav.setPage('landing')}><LogOut size={19} /></IconButton>
+            <IconButton label="Salir" onClick={nav.signOut}><LogOut size={19} /></IconButton>
           </div>
         </header>
         {children}
@@ -278,27 +415,30 @@ function AppShell({ children, nav }) {
   );
 }
 
-function AdminDashboard() {
+function AdminDashboard({ data }) {
+  const activeRoutes = data.routes || pickups;
+  const activeManifests = data.manifests || manifests;
+  const collectedKg = activeManifests.reduce((sum, item) => sum + (parseFloat(String(item.weight).replace(',', '.')) || 0), 0);
   return (
     <main className="page-content">
       <PageHeading title="Centro de Comando" subtitle="Vista general de operaciones y logística de residuos en Bogotá." action="Nuevo manifiesto" />
       <section className="kpi-grid">
         <Kpi icon={WalletCards} label="Ingresos totales" value="$45.2M COP" trend="+12.5%" />
-        <Kpi icon={Package} label="Residuos recolectados" value="12,450 kg" trend="+8.2%" />
-        <Kpi icon={Truck} label="Rutas completadas" value="142" trend="+6.1%" />
+        <Kpi icon={Package} label="Residuos recolectados" value={`${collectedKg.toLocaleString('es-CO')} kg`} trend="+8.2%" />
+        <Kpi icon={Truck} label="Rutas activas" value={activeRoutes.length} trend="+6.1%" />
         <Kpi icon={ShieldCheck} label="Cumplimiento" value="98.4%" trend="estable" />
       </section>
       <section className="dashboard-grid">
         <div className="card map-card">
           <div className="section-title"><Route size={22} /><h2>Rutas en vivo</h2></div>
           <div className="mini-map">
-            {pickups.map((pickup, index) => <span className={`pin pin-${index}`} key={pickup.code}>{index + 1}</span>)}
+            {activeRoutes.map((pickup, index) => <span className={`pin pin-${index}`} key={pickup.code}>{index + 1}</span>)}
           </div>
         </div>
         <div className="card">
           <div className="section-title"><Activity size={22} /><h2>Operación de hoy</h2></div>
           <div className="route-list">
-            {pickups.map((pickup) => (
+            {activeRoutes.map((pickup) => (
               <article key={pickup.code}>
                 <div>
                   <strong>{pickup.code}</strong>
@@ -310,12 +450,13 @@ function AdminDashboard() {
           </div>
         </div>
       </section>
-      <ManifestTable admin />
+      <ManifestTable admin manifests={activeManifests} />
     </main>
   );
 }
 
-function ClientPortal() {
+function ClientPortal({ data }) {
+  const activeManifests = data.manifests || manifests;
   return (
     <main className="page-content">
       <PageHeading title="Hola, Cliente Eco" subtitle="Resumen de impacto ambiental, solicitudes y certificados recientes." action="Solicitar recolección" />
@@ -329,16 +470,25 @@ function ClientPortal() {
         <Kpi icon={Droplets} label="Líquidos peligrosos" value="320 L" trend="certificados" />
         <Kpi icon={FlaskConical} label="Biológicos" value="85 kg" trend="en custodia" />
       </section>
-      <ManifestTable />
+      <ManifestTable manifests={activeManifests} />
     </main>
   );
 }
 
-function DriverApp({ nav }) {
+function DriverApp({ nav, data, onCompleteManifest }) {
   const [waste, setWaste] = useState(wasteTypes[0]);
   const [weight, setWeight] = useState(15.5);
   const [payment, setPayment] = useState('PSE / Nequi');
+  const [saveStatus, setSaveStatus] = useState('');
   const total = useMemo(() => 42000 + Math.max(Number(weight || 0) - 10, 0) * waste.rate, [weight, waste]);
+  const route = data.routes?.[0] || pickups[0];
+  const nextStop = data.routeStops?.[0] || routeStops[0];
+
+  async function complete() {
+    setSaveStatus('Guardando manifiesto...');
+    const result = await onCompleteManifest({ wasteType: waste.label, quantity: Number(weight || 0), amount: Math.round(total) });
+    setSaveStatus(result.error ? `Error: ${result.error}` : `Manifiesto ${result.id} guardado en Supabase`);
+  }
 
   return (
     <div className="driver-shell">
@@ -350,8 +500,8 @@ function DriverApp({ nav }) {
         <section className="card route-card">
           <div>
             <span className="eyebrow">RTA-BOG-409</span>
-            <h1>Zona Norte - Hospitales</h1>
-            <p><MapPin size={16} /> Clínica San Juan de Dios · Cra. 10 #18-75</p>
+            <h1>{route.zone}</h1>
+            <p><MapPin size={16} /> {nextStop.name} · {nextStop.address}</p>
           </div>
           <button className="button primary full"><PlayCircle size={18} /> Iniciar recorrido en punto</button>
         </section>
@@ -388,7 +538,8 @@ function DriverApp({ nav }) {
           <div className="signature"><span>Firma del generador</span></div>
           <div className="signature empty"><span>Firma del transportador</span></div>
         </section>
-        <button className="button primary complete"><Check size={20} /> Completar manifiesto</button>
+        {saveStatus && <p className="save-status">{saveStatus}</p>}
+        <button className="button primary complete" onClick={complete}><Check size={20} /> Completar manifiesto</button>
       </main>
       <nav className="bottom-nav">
         <button className="active"><Home size={20} /> Home</button>
@@ -427,7 +578,7 @@ function Progress({ value }) {
   return <div className="progress"><span style={{ width: `${value}%` }} /></div>;
 }
 
-function ManifestTable({ admin = false }) {
+function ManifestTable({ admin = false, manifests: manifestRows = manifests }) {
   return (
     <section className="card table-card">
       <div className="section-title"><FileText size={22} /><h2>{admin ? 'Manifiestos recientes' : 'Certificados y manifiestos'}</h2></div>
@@ -435,7 +586,7 @@ function ManifestTable({ admin = false }) {
         <table>
           <thead><tr><th>ID</th>{admin && <th>Cliente</th>}<th>Tipo</th><th>Cantidad</th><th>Estado</th><th>Fecha</th><th></th></tr></thead>
           <tbody>
-            {manifests.map((manifest) => (
+            {manifestRows.map((manifest) => (
               <tr key={manifest.id}>
                 <td>{manifest.id}</td>
                 {admin && <td>{manifest.client}</td>}

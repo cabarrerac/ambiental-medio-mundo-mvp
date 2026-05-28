@@ -319,6 +319,21 @@ input {
   padding: 0 12px;
   background: var(--surface);
 }
+.form-error, .save-status {
+  margin: 0;
+  border-radius: 10px;
+  padding: 11px 12px;
+  font-size: 0.88rem;
+  font-weight: 750;
+}
+.form-error {
+  color: var(--danger);
+  background: #ffdad6;
+}
+.save-status {
+  color: var(--primary);
+  background: var(--primary-soft);
+}
 
 .app-layout { display: flex; min-height: 100vh; }
 .sidebar {
@@ -476,7 +491,7 @@ th { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-
 }
 .signature span { position: absolute; right: 14px; bottom: 10px; color: var(--muted); font-size: 0.8rem; font-weight: 700; }
 .signature.empty { background: var(--surface); }
-.complete { width: 100%; height: 56px; font-size: 1.05rem; }
+.complete { width: 100%; height: 56px; margin-bottom: 78px; font-size: 1.05rem; }
 .bottom-nav {
   position: fixed;
   bottom: 0;
