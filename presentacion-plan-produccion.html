@@ -1,0 +1,950 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Plan de Producción - Ambiental Medio Mundo</title>
+    <link rel="icon" type="image/png" href="./assets/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f7faf8;
+        --paper: #ffffff;
+        --ink: #151b18;
+        --muted: #52635a;
+        --line: #d9e5de;
+        --soft: #e7f8ef;
+        --green: #006948;
+        --green-2: #009467;
+        --blue: #274fc7;
+        --amber: #d97706;
+        --red: #ba1a1a;
+        --shadow: 0 24px 70px rgba(9, 54, 39, 0.14);
+        --radius: 22px;
+      }
+
+      * { box-sizing: border-box; }
+      html {
+        scroll-behavior: smooth;
+        scroll-snap-type: y mandatory;
+      }
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: radial-gradient(circle at 85% 0%, rgba(128, 238, 186, 0.34), transparent 34%), var(--bg);
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        overflow-x: hidden;
+      }
+      a { color: inherit; }
+      strong { font-weight: 850; }
+
+      .deck-shell {
+        position: fixed;
+        inset: 16px 18px auto 18px;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        pointer-events: none;
+      }
+      .deck-brand, .deck-controls {
+        pointer-events: auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid rgba(217, 229, 222, 0.88);
+        border-radius: 999px;
+        padding: 8px 12px;
+        background: rgba(255, 255, 255, 0.82);
+        box-shadow: 0 8px 30px rgba(12, 49, 36, 0.08);
+        backdrop-filter: blur(16px);
+      }
+      .deck-brand img {
+        width: 30px;
+        height: 36px;
+        object-fit: contain;
+      }
+      .deck-brand span {
+        color: var(--green);
+        font-size: 0.88rem;
+        font-weight: 900;
+      }
+      .deck-controls button {
+        width: 34px;
+        height: 34px;
+        border: 0;
+        border-radius: 50%;
+        color: white;
+        background: var(--green);
+        font-weight: 900;
+        cursor: pointer;
+      }
+      .deck-controls small {
+        min-width: 62px;
+        color: var(--muted);
+        font-weight: 800;
+        text-align: center;
+      }
+
+      .slide {
+        position: relative;
+        display: grid;
+        align-items: center;
+        min-height: 100vh;
+        padding: 86px 7vw 52px;
+        border-bottom: 1px solid rgba(217, 229, 222, 0.7);
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+      }
+      .slide-inner {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+      }
+      .kicker {
+        display: inline-flex;
+        align-items: center;
+        width: max-content;
+        margin-bottom: 14px;
+        border-radius: 999px;
+        padding: 8px 12px;
+        color: var(--green);
+        background: var(--soft);
+        font-size: 0.78rem;
+        font-weight: 900;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      h1, h2, h3, p { margin-top: 0; }
+      h1 {
+        margin-bottom: 20px;
+        max-width: 1040px;
+        font-size: clamp(2.9rem, 6vw, 5.35rem);
+        line-height: 0.95;
+        letter-spacing: 0;
+      }
+      h2 {
+        margin-bottom: 22px;
+        max-width: 960px;
+        font-size: clamp(2rem, 4.5vw, 4.4rem);
+        line-height: 1.02;
+        letter-spacing: 0;
+      }
+      h3 {
+        margin-bottom: 10px;
+        color: var(--green);
+        font-size: 1.28rem;
+      }
+      p, li {
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.55;
+      }
+      .lead {
+        max-width: 840px;
+        color: #2a3830;
+        font-size: 1.32rem;
+        line-height: 1.55;
+      }
+      .muted { color: var(--muted); }
+      .green { color: var(--green); }
+      .small { font-size: 0.83rem; }
+
+      .split {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(360px, 0.86fr);
+        gap: 42px;
+        align-items: center;
+      }
+      .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+      .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+      .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+      .card {
+        min-width: 0;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 22px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 10px 32px rgba(15, 54, 40, 0.07);
+      }
+      .card.compact { padding: 16px; border-radius: 16px; }
+      .card.dark {
+        color: white;
+        border-color: transparent;
+        background: linear-gradient(135deg, #006948, #008c62);
+      }
+      .card.dark p, .card.dark li, .card.dark h3 { color: rgba(255, 255, 255, 0.86); }
+      .metric {
+        display: block;
+        color: var(--green);
+        font-size: 2.45rem;
+        font-weight: 900;
+        line-height: 1;
+      }
+      .metric-label {
+        display: block;
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 0.84rem;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+      .screenshot {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: var(--paper);
+        box-shadow: var(--shadow);
+      }
+      .screenshot img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .screenshot.tall img {
+        aspect-ratio: 16 / 10;
+        object-fit: cover;
+        object-position: top left;
+      }
+      .logo-hero {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 28px;
+      }
+      .logo-hero img {
+        width: 82px;
+        height: 104px;
+        object-fit: contain;
+      }
+      .logo-hero strong {
+        color: var(--green);
+        font-size: clamp(1.8rem, 4vw, 3.4rem);
+        line-height: 1.02;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: white;
+        box-shadow: 0 10px 30px rgba(15, 54, 40, 0.06);
+      }
+      .table th, .table td {
+        border-bottom: 1px solid var(--line);
+        padding: 13px 14px;
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.35;
+        text-align: left;
+        vertical-align: top;
+      }
+      .table th {
+        color: var(--green);
+        background: #f0faf5;
+        font-size: 0.74rem;
+        font-weight: 900;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .table tr:last-child td { border-bottom: 0; }
+      .table strong { color: var(--ink); }
+
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 9px 12px;
+        color: var(--green);
+        background: white;
+        font-size: 0.86rem;
+        font-weight: 850;
+      }
+      .timeline {
+        display: grid;
+        gap: 12px;
+      }
+      .phase {
+        display: grid;
+        grid-template-columns: 128px 1fr 110px;
+        gap: 16px;
+        align-items: start;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 16px;
+        background: white;
+      }
+      .phase time {
+        color: var(--green);
+        font-size: 0.9rem;
+        font-weight: 900;
+      }
+      .phase strong { display: block; margin-bottom: 5px; }
+      .phase span:last-child {
+        justify-self: end;
+        border-radius: 999px;
+        padding: 7px 10px;
+        color: var(--green);
+        background: var(--soft);
+        font-size: 0.8rem;
+        font-weight: 900;
+      }
+
+      #slide-1 .logo-hero {
+        margin-bottom: 16px;
+      }
+      #slide-1 h1 {
+        max-width: 720px;
+        font-size: clamp(2.8rem, 5.4vw, 4.95rem);
+      }
+      #slide-1 .lead {
+        font-size: 1.16rem;
+      }
+      #slide-1 .screenshot img {
+        aspect-ratio: 16 / 10;
+        object-fit: cover;
+        object-position: top left;
+      }
+      #slide-13 .timeline {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      #slide-13 .phase {
+        grid-template-columns: 88px 1fr;
+        gap: 10px;
+        padding: 12px;
+      }
+      #slide-13 .phase p {
+        margin-bottom: 0;
+        font-size: 0.78rem;
+        line-height: 1.32;
+      }
+      #slide-13 .phase span:last-child {
+        grid-column: 1 / -1;
+        justify-self: start;
+        padding: 5px 9px;
+      }
+      #slide-15 h2 {
+        margin-bottom: 12px;
+      }
+      #slide-15 .table th,
+      #slide-15 .table td {
+        padding: 9px 10px;
+        font-size: 0.76rem;
+        line-height: 1.24;
+      }
+      #slide-15 .small {
+        margin-top: 8px;
+        font-size: 0.72rem;
+      }
+
+      .architecture {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+      }
+      .arch-col {
+        position: relative;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 18px;
+        background: white;
+      }
+      .arch-col::after {
+        content: "→";
+        position: absolute;
+        right: -16px;
+        top: 50%;
+        color: var(--green);
+        font-size: 1.5rem;
+        font-weight: 900;
+      }
+      .arch-col:last-child::after { display: none; }
+      .arch-col h3 { font-size: 1rem; }
+      .arch-col ul { padding-left: 18px; }
+      .arch-col li { margin-bottom: 8px; font-size: 0.9rem; }
+
+      .warning {
+        border-left: 7px solid var(--amber);
+        background: #fff8e7;
+      }
+      .danger {
+        border-left: 7px solid var(--red);
+        background: #fff0f0;
+      }
+      .success {
+        border-left: 7px solid var(--green);
+        background: #effaf4;
+      }
+
+      .source-list li {
+        margin-bottom: 8px;
+        font-size: 0.86rem;
+      }
+      .footer-note {
+        position: absolute;
+        left: 7vw;
+        right: 7vw;
+        bottom: 18px;
+        color: #819189;
+        font-size: 0.72rem;
+      }
+      .slide-number {
+        position: absolute;
+        right: 7vw;
+        bottom: 18px;
+        color: #8a9a92;
+        font-size: 0.72rem;
+        font-weight: 800;
+      }
+
+      .cursor-dot, .cursor-trail {
+        position: fixed;
+        z-index: 9999;
+        pointer-events: none;
+        border-radius: 999px;
+        transform: translate(-50%, -50%);
+      }
+      .cursor-dot {
+        width: 13px;
+        height: 13px;
+        background: var(--green);
+        box-shadow: 0 0 0 8px rgba(0, 105, 72, 0.14);
+      }
+      .cursor-trail {
+        width: 9px;
+        height: 9px;
+        background: rgba(0, 148, 103, 0.34);
+        transition: opacity 0.25s ease;
+      }
+
+      @media (max-width: 980px) {
+        .slide { padding: 82px 22px 44px; }
+        .split, .grid-2, .grid-3, .grid-4, .architecture { grid-template-columns: 1fr; }
+        .phase { grid-template-columns: 1fr; }
+        .phase span:last-child { justify-self: start; }
+        .arch-col::after { display: none; }
+        .deck-brand span { display: none; }
+      }
+      @media print {
+        .deck-shell, .cursor-dot, .cursor-trail { display: none; }
+        .slide { min-height: 100vh; page-break-after: always; }
+        body { background: white; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="deck-shell">
+      <div class="deck-brand">
+        <img src="./assets/logo-trash.png" alt="Ambiental Medio Mundo" />
+        <span>Ambiental Medio Mundo · Plan producción</span>
+      </div>
+      <div class="deck-controls">
+        <button id="prevSlide" aria-label="Anterior">‹</button>
+        <small id="slideCounter">1 / 18</small>
+        <button id="nextSlide" aria-label="Siguiente">›</button>
+      </div>
+    </div>
+
+    <main id="deck">
+      <section class="slide" id="slide-1">
+        <div class="slide-inner split">
+          <div>
+            <div class="logo-hero">
+              <img src="./assets/logo-trash.png" alt="Logo Ambiental Medio Mundo" />
+              <strong>Ambiental<br />Medio Mundo</strong>
+            </div>
+            <span class="kicker">Plan de trabajo · QA · Producción</span>
+            <h1>De MVP visible a plataforma operativa segura</h1>
+            <p class="lead">Ruta técnica, funcional y financiera para convertir el avance actual en un software auditable, multitenant y listo para pilotos reales con cliente.</p>
+            <div class="pill-row">
+              <span class="pill">Web app</span>
+              <span class="pill">Android / iOS</span>
+              <span class="pill">Backend y base de datos</span>
+              <span class="pill">QA productivo</span>
+              <span class="pill">SEO + GEO</span>
+            </div>
+          </div>
+          <div class="screenshot">
+            <img src="./presentation-assets/mvp-landing.png" alt="Landing del MVP" />
+          </div>
+        </div>
+        <span class="slide-number">01</span>
+      </section>
+
+      <section class="slide" id="slide-2">
+        <div class="slide-inner">
+          <span class="kicker">Estado actual</span>
+          <h2>El MVP ya demuestra la experiencia, pero aún no es producción</h2>
+          <div class="grid-4">
+            <div class="card">
+              <span class="metric">✓</span>
+              <span class="metric-label">Frontend integrado</span>
+              <p>Landing, login, dashboard, portal cliente y modo ruta funcionando en Netlify.</p>
+            </div>
+            <div class="card">
+              <span class="metric">✓</span>
+              <span class="metric-label">Supabase conectado</span>
+              <p>Auth, tablas iniciales, RLS básico y manifiestos guardándose desde la app.</p>
+            </div>
+            <div class="card warning">
+              <span class="metric">!</span>
+              <span class="metric-label">Backend incompleto</span>
+              <p>Faltan APIs de negocio, auditoría profunda, roles reales, validaciones y jobs.</p>
+            </div>
+            <div class="card warning">
+              <span class="metric">QA</span>
+              <span class="metric-label">Falta ambiente formal</span>
+              <p>Se requiere staging/QA espejo de producción para validar antes de publicar.</p>
+            </div>
+          </div>
+        </div>
+        <span class="slide-number">02</span>
+      </section>
+
+      <section class="slide" id="slide-3">
+        <div class="slide-inner split">
+          <div>
+            <span class="kicker">Qué es backend</span>
+            <h2>El backend es el motor que no se ve, pero sostiene todo</h2>
+            <p class="lead">Mientras el frontend es la pantalla que usa el cliente, el backend valida reglas, protege datos, calcula tarifas, registra auditorías, expone APIs y conecta servicios externos.</p>
+            <div class="grid-2">
+              <div class="card success">
+                <h3>Ya existe una base inicial</h3>
+                <p>Supabase cubre autenticación, base de datos y APIs automáticas para el MVP.</p>
+              </div>
+              <div class="card danger">
+                <h3>Falta backend de negocio</h3>
+                <p>Servicios propios para reglas de residuos, facturación, permisos, documentos, auditoría, integraciones y procesos programados.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card dark">
+            <h3>Ejemplos concretos</h3>
+            <ul>
+              <li>Validar que un conductor solo vea sus rutas asignadas.</li>
+              <li>Bloquear edición de un manifiesto ya certificado.</li>
+              <li>Generar PDF de certificado con consecutivo auditable.</li>
+              <li>Enviar notificaciones y recordatorios automáticos.</li>
+              <li>Registrar quién cambió cada dato, cuándo y desde dónde.</li>
+            </ul>
+          </div>
+        </div>
+        <span class="slide-number">03</span>
+      </section>
+
+      <section class="slide" id="slide-4">
+        <div class="slide-inner">
+          <span class="kicker">Arquitectura objetivo</span>
+          <h2>Infraestructura propuesta para QA y producción</h2>
+          <div class="architecture">
+            <div class="arch-col">
+              <h3>Canales</h3>
+              <ul>
+                <li>Web React / Next.js</li>
+                <li>Android / iOS con React Native</li>
+                <li>Portal cliente y operación interna</li>
+              </ul>
+            </div>
+            <div class="arch-col">
+              <h3>Backend</h3>
+              <ul>
+                <li>Supabase Auth + Postgres</li>
+                <li>Edge Functions / Node APIs</li>
+                <li>Jobs programados y webhooks</li>
+              </ul>
+            </div>
+            <div class="arch-col">
+              <h3>Datos</h3>
+              <ul>
+                <li>Modelo multitenant</li>
+                <li>RLS por tenant y rol</li>
+                <li>Storage de firmas, fotos y PDFs</li>
+              </ul>
+            </div>
+            <div class="arch-col">
+              <h3>Operación</h3>
+              <ul>
+                <li>Netlify deploy previews</li>
+                <li>Sentry + logs + alertas</li>
+                <li>Backups, auditoría y monitoreo</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <span class="slide-number">04</span>
+      </section>
+
+      <section class="slide" id="slide-5">
+        <div class="slide-inner split">
+          <div>
+            <span class="kicker">Producto actual</span>
+            <h2>La interfaz ya permite vender la visión del sistema</h2>
+            <p class="lead">El dashboard enseña rutas, manifiestos, KPIs y operación del día. Esta pantalla sirve para demostrar dirección de producto, no para cerrar todavía auditoría operativa completa.</p>
+            <div class="grid-2">
+              <div class="card"><h3>Validable hoy</h3><p>Login, navegación, lectura de datos y creación básica de manifiesto.</p></div>
+              <div class="card"><h3>Siguiente salto</h3><p>CRUD completo, permisos, auditoría, reportes, certificados PDF y trazabilidad.</p></div>
+            </div>
+          </div>
+          <div class="screenshot tall">
+            <img src="./presentation-assets/mvp-dashboard.png" alt="Dashboard administrativo del MVP" />
+          </div>
+        </div>
+        <span class="slide-number">05</span>
+      </section>
+
+      <section class="slide" id="slide-6">
+        <div class="slide-inner split">
+          <div class="screenshot tall">
+            <img src="./presentation-assets/mvp-driver.png" alt="Modo ruta transportista" />
+          </div>
+          <div>
+            <span class="kicker">App transportista</span>
+            <h2>Modo ruta será el corazón operativo en campo</h2>
+            <p class="lead">Debe funcionar incluso con señal limitada, validar firmas, fotos, pesajes, geolocalización, tiempos, pagos y sincronización segura.</p>
+            <div class="card warning">
+              <h3>Faltantes críticos</h3>
+              <p>Modo offline, control de duplicados, evidencia fotográfica, firma real en canvas, QR, GPS, validación de ruta, sincronización con cola y auditoría de cambios.</p>
+            </div>
+          </div>
+        </div>
+        <span class="slide-number">06</span>
+      </section>
+
+      <section class="slide" id="slide-7">
+        <div class="slide-inner">
+          <span class="kicker">Multitenant</span>
+          <h2>Configuración multitenant para crecer sin mezclar datos</h2>
+          <table class="table">
+            <thead>
+              <tr><th>Capa</th><th>Diseño recomendado</th><th>Validación en QA</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Tenant</strong></td><td>Tabla `organizations` con planes, NIT, configuración, límites y branding.</td><td>Un usuario de empresa A nunca ve datos de empresa B.</td></tr>
+              <tr><td><strong>Usuarios</strong></td><td>`profiles`, `memberships`, roles por tenant: owner, admin, cliente, conductor, auditor.</td><td>Pruebas automatizadas de permisos por rol.</td></tr>
+              <tr><td><strong>Datos</strong></td><td>Todas las tablas operativas con `tenant_id` obligatorio e índices compuestos.</td><td>Políticas RLS y queries revisadas contra fuga de datos.</td></tr>
+              <tr><td><strong>Archivos</strong></td><td>Buckets por tenant o paths con `tenant_id`: firmas, fotos, certificados, soportes.</td><td>Acceso firmado y expiración por rol.</td></tr>
+              <tr><td><strong>Auditoría</strong></td><td>Eventos inmutables con actor, tenant, IP, dispositivo, acción y diff.</td><td>Reporte exportable por periodo y usuario.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <span class="slide-number">07</span>
+      </section>
+
+      <section class="slide" id="slide-8">
+        <div class="slide-inner">
+          <span class="kicker">Backend y CRUD</span>
+          <h2>Módulos funcionales para producción</h2>
+          <div class="grid-3">
+            <div class="card"><h3>Operación</h3><p>CRUD clientes, sedes, rutas, vehículos, conductores, residuos, tarifas, manifiestos y certificados.</p></div>
+            <div class="card"><h3>Cumplimiento</h3><p>Cadena de custodia, evidencias, auditoría, vencimientos documentales, reportes normativos y exportables.</p></div>
+            <div class="card"><h3>Finanzas</h3><p>Tarifas dinámicas, órdenes de servicio, pagos, cartera, facturación electrónica o integración contable.</p></div>
+            <div class="card"><h3>Documentos</h3><p>Generación PDF, firmas digitales, anexos, certificados de disposición final y versionado.</p></div>
+            <div class="card"><h3>Notificaciones</h3><p>Email, WhatsApp/SMS opcional, alertas de ruta, estado de manifiesto y recordatorios.</p></div>
+            <div class="card"><h3>Administración</h3><p>Roles, permisos, planes, límites por tenant, configuración de marca y analítica operacional.</p></div>
+          </div>
+        </div>
+        <span class="slide-number">08</span>
+      </section>
+
+      <section class="slide" id="slide-9">
+        <div class="slide-inner">
+          <span class="kicker">Seguridad</span>
+          <h2>Faltantes para un deploy seguro</h2>
+          <table class="table">
+            <thead><tr><th>Riesgo</th><th>Acción requerida</th><th>Prioridad</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Tokens expuestos en chat</strong></td><td>Revocar y rotar GitHub, Supabase y Netlify. Configurar secrets por entorno.</td><td>Alta</td></tr>
+              <tr><td><strong>RLS básico</strong></td><td>Reescribir políticas por tenant/rol y añadir pruebas de aislamiento.</td><td>Alta</td></tr>
+              <tr><td><strong>Frontend con anon key</strong></td><td>Mover reglas sensibles a Edge Functions/API backend. Mantener anon solo para operaciones permitidas.</td><td>Alta</td></tr>
+              <tr><td><strong>Auditoría insuficiente</strong></td><td>Tabla `audit_events` inmutable, triggers y logs de acciones críticas.</td><td>Alta</td></tr>
+              <tr><td><strong>Backups y retención</strong></td><td>Backups automáticos, pruebas de restauración, política de retención y exportaciones.</td><td>Media</td></tr>
+              <tr><td><strong>Hardening deploy</strong></td><td>CSP, security headers, branch protection, deploy approvals, scans de dependencias.</td><td>Media</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <span class="slide-number">09</span>
+      </section>
+
+      <section class="slide" id="slide-10">
+        <div class="slide-inner">
+          <span class="kicker">QA como producción</span>
+          <h2>Ambientes y flujo de validación</h2>
+          <div class="grid-3">
+            <div class="card success"><h3>Dev</h3><p>Vibe coding rápido con ramas cortas, datos de prueba y revisión visual diaria.</p></div>
+            <div class="card warning"><h3>QA / Staging</h3><p>Replica producción: otra base Supabase, otro site Netlify, datos anonimizados, pruebas E2E y UAT.</p></div>
+            <div class="card dark"><h3>Producción</h3><p>Deploy aprobado, monitoreo activo, backups, alertas y rollback listo.</p></div>
+          </div>
+          <div class="card" style="margin-top:18px">
+            <h3>Gate antes de producción</h3>
+            <p>Un cambio solo pasa si cumple lint, pruebas unitarias, pruebas E2E, revisión de permisos, validación responsive, pruebas de carga ligera, revisión de auditoría y aceptación funcional por rol.</p>
+          </div>
+        </div>
+        <span class="slide-number">10</span>
+      </section>
+
+      <section class="slide" id="slide-11">
+        <div class="slide-inner">
+          <span class="kicker">Web + móvil</span>
+          <h2>Herramientas y lenguajes recomendados</h2>
+          <table class="table">
+            <thead><tr><th>Frente</th><th>Stack</th><th>Razón</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Web app</strong></td><td>Next.js / React, TypeScript, Tailwind o CSS Modules, Zod, TanStack Query</td><td>SEO, rendimiento, tipado, formularios robustos y datos cacheados.</td></tr>
+              <tr><td><strong>Mobile</strong></td><td>React Native + Expo, TypeScript, Expo Router, SQLite/local storage</td><td>Un equipo comparte lógica con web y permite Android/iOS más rápido.</td></tr>
+              <tr><td><strong>Backend</strong></td><td>Supabase Postgres, Edge Functions, Node.js/TypeScript, SQL migrations</td><td>Velocidad para MVP y base sólida para permisos, APIs y jobs.</td></tr>
+              <tr><td><strong>QA</strong></td><td>Playwright, Vitest, Testing Library, Lighthouse CI</td><td>Prueba flujos críticos, regresiones visuales y rendimiento.</td></tr>
+              <tr><td><strong>Observabilidad</strong></td><td>Sentry, Supabase logs, Netlify logs, uptime monitor</td><td>Errores, tiempos, trazabilidad y alertas de caída.</td></tr>
+              <tr><td><strong>Vibe coding</strong></td><td>Codex, GitHub PRs, issues cortos, prompts versionados</td><td>Velocidad con control: cada iteración se valida con pruebas y revisión humana.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <span class="slide-number">11</span>
+      </section>
+
+      <section class="slide" id="slide-12">
+        <div class="slide-inner">
+          <span class="kicker">SEO avanzado + GEO</span>
+          <h2>Visibilidad para buscadores y motores generativos</h2>
+          <div class="grid-2">
+            <div class="card">
+              <h3>SEO avanzado</h3>
+              <ul>
+                <li>Next.js con SSR/SSG para páginas públicas.</li>
+                <li>Metadata por servicio, ciudad, tipo de residuo y sector.</li>
+                <li>Schema.org: Organization, LocalBusiness, Service, FAQ, Breadcrumb.</li>
+                <li>Core Web Vitals, sitemap, robots, canonical, Open Graph.</li>
+                <li>Contenido técnico: manifiestos, cumplimiento, trazabilidad, logística ambiental.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>GEO: Generative Engine Optimization</h3>
+              <ul>
+                <li>Páginas con respuestas claras para IA generativa.</li>
+                <li>FAQs estructuradas, glosario y fuentes normativas.</li>
+                <li>Datos consistentes de empresa, servicios y cobertura.</li>
+                <li>Casos de uso, comparativas y contenido citacional.</li>
+                <li>Archivo `llms.txt` y resumen semántico del producto.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <span class="slide-number">12</span>
+      </section>
+
+      <section class="slide" id="slide-13">
+        <div class="slide-inner">
+          <span class="kicker">Cronograma</span>
+          <h2>Ruta de 16 semanas hacia piloto productivo</h2>
+          <div class="timeline">
+            <div class="phase"><time>Sem. 1-2</time><div><strong>Descubrimiento y arquitectura</strong><p>Requisitos, roles, modelo multitenant, mapa de riesgos, definición de QA y backlog.</p></div><span>80 h</span></div>
+            <div class="phase"><time>Sem. 3-5</time><div><strong>Backend base + seguridad</strong><p>Migraciones, RLS por tenant, APIs, auditoría, storage, ambientes dev/QA/prod.</p></div><span>180 h</span></div>
+            <div class="phase"><time>Sem. 6-8</time><div><strong>CRUD operativo web</strong><p>Clientes, sedes, residuos, rutas, manifiestos, tarifas, certificados y administración.</p></div><span>220 h</span></div>
+            <div class="phase"><time>Sem. 9-11</time><div><strong>App móvil Android/iOS</strong><p>Modo ruta, offline, QR, firmas, evidencias, sincronización y build de tiendas.</p></div><span>240 h</span></div>
+            <div class="phase"><time>Sem. 12-14</time><div><strong>QA, auditoría y cumplimiento</strong><p>Pruebas E2E, permisos, carga ligera, seguridad, reportes y corrección de bugs.</p></div><span>190 h</span></div>
+            <div class="phase"><time>Sem. 15-16</time><div><strong>UAT, SEO/GEO y salida a piloto</strong><p>Capacitación, documentación, contenido público, monitoreo y estabilización.</p></div><span>130 h</span></div>
+          </div>
+        </div>
+        <span class="slide-number">13</span>
+      </section>
+
+      <section class="slide" id="slide-14">
+        <div class="slide-inner">
+          <span class="kicker">Horas estimadas</span>
+          <h2>Rango de esfuerzo incluyendo CRUD y debugging</h2>
+          <table class="table">
+            <thead><tr><th>Bloque</th><th>Horas estimadas</th><th>Incluye</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Producto + UX</strong></td><td>100-140 h</td><td>Flujos por rol, prototipos, ajustes con cliente, documentación funcional.</td></tr>
+              <tr><td><strong>Backend + datos</strong></td><td>220-300 h</td><td>Modelo, APIs, RLS, auditoría, storage, jobs, integraciones.</td></tr>
+              <tr><td><strong>Web app CRUD</strong></td><td>240-340 h</td><td>CRUD completo, formularios, tablas, filtros, certificados, dashboard.</td></tr>
+              <tr><td><strong>Mobile Android/iOS</strong></td><td>260-380 h</td><td>Modo ruta, offline, cámara, QR, firma, builds y pruebas.</td></tr>
+              <tr><td><strong>QA + seguridad + debugging</strong></td><td>220-320 h</td><td>E2E, regresión, bugs, hardening, permisos, rendimiento.</td></tr>
+              <tr><td><strong>SEO/GEO + contenido técnico</strong></td><td>70-110 h</td><td>SSR, metadata, schema, contenido, llms.txt y medición.</td></tr>
+              <tr><td><strong>DevOps + despliegue</strong></td><td>80-130 h</td><td>Ambientes, CI/CD, monitoreo, backups, rollback, secrets.</td></tr>
+              <tr><td><strong>Total inicial</strong></td><td><strong>1.190-1.720 h</strong></td><td>Rango realista para pasar de MVP a piloto productivo auditado.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <span class="slide-number">14</span>
+      </section>
+
+      <section class="slide" id="slide-15">
+        <div class="slide-inner">
+          <span class="kicker">Costos mensuales</span>
+          <h2>Herramientas y sostenimiento estimado</h2>
+          <table class="table">
+            <thead><tr><th>Herramienta</th><th>Uso</th><th>Costo mensual estimado</th><th>Notas</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Supabase Pro</strong></td><td>Base de datos, Auth, Storage, Edge Functions</td><td>Desde USD 25</td><td>Sube por cómputo, storage, egress y proyectos adicionales.</td></tr>
+              <tr><td><strong>Netlify</strong></td><td>Hosting web, deploy previews, CDN</td><td>USD 0-50 inicial</td><td>El plan actual usa créditos/uso; validar en dashboard según tráfico y builds.</td></tr>
+              <tr><td><strong>Sentry</strong></td><td>Errores, performance, alertas</td><td>USD 0-30 inicial</td><td>Plan gratuito puede bastar para QA; producción requiere cuota mayor.</td></tr>
+              <tr><td><strong>Email transaccional</strong></td><td>Invitaciones, certificados, alertas</td><td>USD 0-20</td><td>Resend/Postmark/SendGrid según volumen.</td></tr>
+              <tr><td><strong>Dominio + DNS</strong></td><td>Dominio corporativo, DNS, seguridad</td><td>USD 1-3</td><td>Normalmente USD 12-35/año según dominio.</td></tr>
+              <tr><td><strong>Apple Developer</strong></td><td>Publicar app iOS</td><td>USD 8,25 aprox.</td><td>USD 99/año.</td></tr>
+              <tr><td><strong>Google Play Console</strong></td><td>Publicar app Android</td><td>Pago único USD 25</td><td>No es mensual recurrente.</td></tr>
+              <tr><td><strong>Monitoreo/Uptime</strong></td><td>Alertas de caída</td><td>USD 0-10</td><td>Puede iniciar gratis.</td></tr>
+              <tr><td><strong>Total herramientas</strong></td><td>QA + piloto pequeño</td><td><strong>USD 35-140/mes</strong></td><td>Sin contar horas del equipo ni costos por alto tráfico.</td></tr>
+            </tbody>
+          </table>
+          <p class="small muted">Valores sin impuestos, sujetos a tasa de cambio y consumo real. Estimación válida para piloto pequeño.</p>
+        </div>
+        <span class="slide-number">15</span>
+      </section>
+
+      <section class="slide" id="slide-16">
+        <div class="slide-inner">
+          <span class="kicker">Sostenimiento</span>
+          <h2>Operación mensual después del piloto</h2>
+          <div class="grid-3">
+            <div class="card">
+              <span class="metric">40-60 h</span>
+              <span class="metric-label">Base mensual</span>
+              <p>Corrección de bugs, soporte menor, backups, monitoreo, revisión de logs y pequeños ajustes.</p>
+            </div>
+            <div class="card">
+              <span class="metric">70-120 h</span>
+              <span class="metric-label">Crecimiento controlado</span>
+              <p>Nuevas funciones, mejoras de UX, reportes, automatizaciones y soporte a usuarios.</p>
+            </div>
+            <div class="card">
+              <span class="metric">120+ h</span>
+              <span class="metric-label">Escalamiento</span>
+              <p>Integraciones, facturación, analítica avanzada, optimización móvil y hardening continuo.</p>
+            </div>
+          </div>
+          <div class="card warning" style="margin-top:18px">
+            <h3>Recomendación contractual</h3>
+            <p>Separar desarrollo de nuevas funcionalidades del soporte recurrente. El soporte debe incluir SLA, horario de atención, severidades y tiempos de respuesta.</p>
+          </div>
+        </div>
+        <span class="slide-number">16</span>
+      </section>
+
+      <section class="slide" id="slide-17">
+        <div class="slide-inner">
+          <span class="kicker">Auditoría y cumplimiento</span>
+          <h2>Checklist de aceptación antes de producción</h2>
+          <div class="grid-2">
+            <div class="card">
+              <h3>Técnico</h3>
+              <ul>
+                <li>RLS probado por tenant y rol.</li>
+                <li>Backups y restauración verificados.</li>
+                <li>Logs y auditoría inmutable.</li>
+                <li>Pruebas E2E de rutas críticas.</li>
+                <li>Monitoreo, alertas y rollback.</li>
+                <li>Headers de seguridad y CSP.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Funcional</h3>
+              <ul>
+                <li>CRUD completo aprobado por rol.</li>
+                <li>Manifiesto con evidencias, firma y certificado.</li>
+                <li>Flujo de conductor validado en campo.</li>
+                <li>Reportes operativos y exportables.</li>
+                <li>Capacitación y manual rápido.</li>
+                <li>UAT firmado por Ambiental Medio Mundo.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <span class="slide-number">17</span>
+      </section>
+
+      <section class="slide" id="slide-18">
+        <div class="slide-inner">
+          <span class="kicker">Cierre</span>
+          <h2>Decisiones para iniciar la siguiente fase</h2>
+          <div class="grid-3">
+            <div class="card dark"><h3>1. Alcance piloto</h3><p>Definir número de clientes, conductores, rutas y documentos reales del primer ciclo.</p></div>
+            <div class="card"><h3>2. Modelo multitenant</h3><p>Aprobar roles, permisos, límites y branding por organización.</p></div>
+            <div class="card"><h3>3. QA productivo</h3><p>Crear ambiente QA separado y criterios de aceptación por módulo.</p></div>
+            <div class="card"><h3>4. Seguridad</h3><p>Rotar tokens, configurar secrets, auditoría, backup y protección de ramas.</p></div>
+            <div class="card"><h3>5. Mobile</h3><p>Confirmar si se lanza con PWA, Expo interna o publicación en tiendas.</p></div>
+            <div class="card"><h3>6. Comercial</h3><p>Preparar demo con datos reales, historia de valor y métricas de impacto.</p></div>
+          </div>
+          <p class="lead" style="margin-top:24px">Próximo paso recomendado: Sprint 0 de 2 semanas para cerrar requisitos, arquitectura, QA y backlog priorizado.</p>
+        </div>
+        <div class="footer-note">
+          Fuentes consultadas: Supabase pricing/docs, Netlify pricing/docs, Sentry pricing, Apple Developer Program, Google Play Console, documentación propia del MVP y capturas del software publicado.
+        </div>
+        <span class="slide-number">18</span>
+      </section>
+    </main>
+
+    <div class="cursor-dot" id="cursorDot"></div>
+    <script>
+      const slides = [...document.querySelectorAll('.slide')];
+      const counter = document.getElementById('slideCounter');
+      let current = 0;
+
+      function goToSlide(index) {
+        current = Math.max(0, Math.min(slides.length - 1, index));
+        slides[current].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.replaceState(null, '', `#slide-${current + 1}`);
+        counter.textContent = `${current + 1} / ${slides.length}`;
+      }
+
+      function updateCurrentFromScroll() {
+        const middle = window.scrollY + window.innerHeight / 2;
+        const next = slides.findIndex(slide => middle >= slide.offsetTop && middle < slide.offsetTop + slide.offsetHeight);
+        if (next >= 0 && next !== current) {
+          current = next;
+          counter.textContent = `${current + 1} / ${slides.length}`;
+        }
+      }
+
+      document.getElementById('prevSlide').addEventListener('click', () => goToSlide(current - 1));
+      document.getElementById('nextSlide').addEventListener('click', () => goToSlide(current + 1));
+      window.addEventListener('scroll', updateCurrentFromScroll, { passive: true });
+      window.addEventListener('keydown', event => {
+        if (event.key === 'ArrowRight' || event.key === 'PageDown') goToSlide(current + 1);
+        if (event.key === 'ArrowLeft' || event.key === 'PageUp') goToSlide(current - 1);
+      });
+
+      const dot = document.getElementById('cursorDot');
+      const trail = Array.from({ length: 16 }, () => {
+        const node = document.createElement('div');
+        node.className = 'cursor-trail';
+        document.body.appendChild(node);
+        return { node, x: window.innerWidth / 2, y: window.innerHeight / 2 };
+      });
+      let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+      window.addEventListener('pointermove', event => {
+        mouse = { x: event.clientX, y: event.clientY };
+        dot.style.left = `${mouse.x}px`;
+        dot.style.top = `${mouse.y}px`;
+      });
+
+      function animateTrail() {
+        let x = mouse.x;
+        let y = mouse.y;
+        trail.forEach((point, index) => {
+          point.x += (x - point.x) * 0.28;
+          point.y += (y - point.y) * 0.28;
+          point.node.style.left = `${point.x}px`;
+          point.node.style.top = `${point.y}px`;
+          point.node.style.opacity = `${1 - index / trail.length}`;
+          point.node.style.transform = `translate(-50%, -50%) scale(${1 - index * 0.035})`;
+          x = point.x;
+          y = point.y;
+        });
+        requestAnimationFrame(animateTrail);
+      }
+      animateTrail();
+    </script>
+  </body>
+</html>
