@@ -104,7 +104,7 @@ function IconButton({ children, label, onClick }) {
 function Brand({ compact = false }) {
   return (
     <div className="brand">
-      <span className="brand-mark"><Leaf size={compact ? 18 : 22} /></span>
+      <img className="brand-logo" src="/assets/logo-trash.png" alt="Logo Ambiental Mediomundo" />
       {!compact && <span>Ambiental Medio Mundo</span>}
     </div>
   );
