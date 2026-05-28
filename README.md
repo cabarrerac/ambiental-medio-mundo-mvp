@@ -18,6 +18,12 @@ http://localhost:4173/
 
 El MVP se ejecuta como React estático en navegador usando CDN para React/Babel, porque el runtime local disponible no incluye `npm`.
 
+También está publicado en Netlify:
+
+```txt
+https://ambiental-medio-mundo-mvp.netlify.app/
+```
+
 ## Supabase
 
 El frontend está conectado al proyecto Supabase `gnrxaxpwkscfwbuskekb`:
