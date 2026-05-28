@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Modo Ruta - Ambiental Medio Mundo</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed-variant": "#173bab",
+                      "secondary-fixed-dim": "#b8c4ff",
+                      "on-error": "#ffffff",
+                      "inverse-primary": "#68dba9",
+                      "surface-container": "#edeef0",
+                      "surface-container-highest": "#e1e2e4",
+                      "on-primary-container": "#f5fff7",
+                      "secondary": "#3755c3",
+                      "surface-dim": "#d9dadc",
+                      "surface-container-low": "#f3f4f6",
+                      "inverse-on-surface": "#f0f1f3",
+                      "background": "#f8f9fb",
+                      "on-primary-fixed-variant": "#005137",
+                      "outline": "#6d7a72",
+                      "on-error-container": "#93000a",
+                      "surface": "#f8f9fb",
+                      "surface-variant": "#e1e2e4",
+                      "surface-bright": "#f8f9fb",
+                      "secondary-fixed": "#dde1ff",
+                      "on-background": "#191c1e",
+                      "on-primary": "#ffffff",
+                      "on-surface": "#191c1e",
+                      "on-tertiary-container": "#fefcff",
+                      "surface-container-high": "#e7e8ea",
+                      "error": "#ba1a1a",
+                      "primary-fixed-dim": "#68dba9",
+                      "tertiary-fixed-dim": "#bec6e0",
+                      "on-secondary": "#ffffff",
+                      "on-tertiary-fixed-variant": "#3f465c",
+                      "primary-fixed": "#85f8c4",
+                      "primary": "#006948",
+                      "tertiary": "#545c72",
+                      "tertiary-fixed": "#dae2fd",
+                      "inverse-surface": "#2e3132",
+                      "tertiary-container": "#6c748b",
+                      "primary-container": "#00855d",
+                      "on-surface-variant": "#3d4a42",
+                      "surface-tint": "#006c4a",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed": "#001453",
+                      "on-tertiary-fixed": "#131b2e",
+                      "outline-variant": "#bccac0",
+                      "surface-container-lowest": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "secondary-container": "#708cfd",
+                      "on-primary-fixed": "#002114",
+                      "on-secondary-container": "#00217a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "margin-desktop": "32px",
+                      "container-max": "1440px",
+                      "base": "8px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "label-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "display-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for horizontal lists */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Interactive Card Base */
+        .interactive-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .interactive-card:active {
+            transform: scale(0.98);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-low text-on-surface font-body-md antialiased pb-24 selection:bg-primary-container selection:text-on-primary-container">
+<!-- Mobile Header (App Bar) -->
+<header class="sticky top-0 z-40 bg-surface shadow-sm px-margin-mobile h-16 flex items-center justify-between border-b border-surface-container-highest">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[28px]" data-weight="fill">local_shipping</span>
+<h1 class="font-headline-md text-headline-md text-on-surface tracking-tight">Modo Ruta</h1>
+</div>
+<div class="flex items-center gap-2 bg-secondary-container/20 px-3 py-1.5 rounded-full">
+<span class="material-symbols-outlined text-secondary text-[16px] animate-spin">sync</span>
+<span class="font-label-sm text-label-sm text-secondary">Sincronizando...</span>
+</div>
+</header>
+<main class="px-margin-mobile py-6 flex flex-col gap-6">
+<!-- Section 1: Assigned Route Card (Home Status) -->
+<section>
+<h2 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-3">Ruta Asignada Hoy</h2>
+<div class="bg-surface rounded-2xl border border-outline-variant shadow-sm overflow-hidden">
+<div class="p-5 flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div>
+<p class="font-label-sm text-label-sm text-primary mb-1">RTA-BOG-409</p>
+<h3 class="font-headline-md text-headline-md text-on-surface">Zona Norte - Hospitales</h3>
+</div>
+<span class="bg-primary-container text-on-primary-container font-label-sm text-label-sm px-3 py-1 rounded-full">En Progreso</span>
+</div>
+<div class="flex items-center gap-4 bg-surface-container-lowest p-3 rounded-lg border border-surface-container-highest">
+<div class="bg-tertiary-container/10 p-2 rounded-full flex-shrink-0">
+<span class="material-symbols-outlined text-tertiary text-[20px]">location_on</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Próxima Parada (Cliente 3/12)</p>
+<p class="font-body-md text-body-md font-semibold text-on-surface">Clínica San Juan de Dios</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">Cra. 10 # 18-75, Bogotá</p>
+</div>
+</div>
+</div>
+<!-- Action Button for Route -->
+<button class="w-full bg-primary hover:bg-primary/90 text-on-primary font-label-md text-label-md py-4 flex items-center justify-center gap-2 transition-colors interactive-card">
+<span class="material-symbols-outlined text-[20px]" data-weight="fill">play_circle</span>
+                    Iniciar Recorrido en Punto
+                </button>
+</div>
+</section>
+<div class="h-[1px] w-full bg-outline-variant/50 my-2"></div>
+<!-- Section 2: Step-by-Step Collection Flow (Simulated as active task) -->
+<section class="flex flex-col gap-6">
+<div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">Registro de Recolección</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Clínica San Juan de Dios</p>
+</div>
+<!-- Step 1: Waste Type & Weight -->
+<div class="bg-surface rounded-2xl border border-outline-variant p-5 shadow-sm">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-sm text-label-sm">1</div>
+<h3 class="font-headline-md text-headline-md text-[18px] text-on-surface">Tipo y Peso</h3>
+</div>
+<div class="space-y-5">
+<!-- Type Selector (Grid for easy tapping) -->
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-2">Clasificación del Residuo</label>
+<div class="grid grid-cols-2 gap-3">
+<button class="bg-surface-container-low border-2 border-primary rounded-xl p-3 flex flex-col items-center justify-center gap-2 text-primary interactive-card">
+<span class="material-symbols-outlined text-[28px] icon-filled">coronavirus</span>
+<span class="font-label-sm text-label-sm text-center">Biosanitarios</span>
+</button>
+<button class="bg-surface-container-lowest border border-outline-variant rounded-xl p-3 flex flex-col items-center justify-center gap-2 text-on-surface-variant interactive-card">
+<span class="material-symbols-outlined text-[28px]">science</span>
+<span class="font-label-sm text-label-sm text-center">Químicos</span>
+</button>
+<button class="bg-surface-container-lowest border border-outline-variant rounded-xl p-3 flex flex-col items-center justify-center gap-2 text-on-surface-variant interactive-card">
+<span class="material-symbols-outlined text-[28px]">colorize</span>
+<span class="font-label-sm text-label-sm text-center">Cortopunzantes</span>
+</button>
+<button class="bg-surface-container-lowest border border-outline-variant rounded-xl p-3 flex flex-col items-center justify-center gap-2 text-on-surface-variant interactive-card">
+<span class="material-symbols-outlined text-[28px]">recycling</span>
+<span class="font-label-sm text-label-sm text-center">Reciclables</span>
+</button>
+</div>
+</div>
+<!-- Weight Input -->
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-2">Peso de la recolección</label>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-xl py-4 pl-4 pr-16 font-headline-lg-mobile text-headline-lg-mobile text-on-surface focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-shadow" inputmode="decimal" placeholder="0.00" type="number" value="15.5"/>
+<div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+<span class="font-label-md text-label-md text-on-surface-variant">KG</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Step 2: Dynamic Calculator -->
+<div class="bg-surface rounded-2xl border border-outline-variant p-5 shadow-sm">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-sm text-label-sm">2</div>
+<h3 class="font-headline-md text-headline-md text-[18px] text-on-surface">Cálculo de Tarifa</h3>
+</div>
+<div class="bg-surface-container-low rounded-xl p-4 space-y-3">
+<div class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Tarifa Base (hasta 10kg)</span>
+<span class="font-body-md text-body-md text-on-surface">$42,000</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Excedente (5.5kg x $2,000)</span>
+<span class="font-body-md text-body-md text-on-surface">$11,000</span>
+</div>
+<div class="h-[1px] w-full bg-outline-variant/50 my-1"></div>
+<div class="flex justify-between items-center pt-1">
+<span class="font-label-md text-label-md text-on-surface">Total a Cobrar</span>
+<span class="font-headline-md text-headline-md text-primary">$53,000</span>
+</div>
+</div>
+</div>
+<!-- Step 3: Payment Selection -->
+<div class="bg-surface rounded-2xl border border-outline-variant p-5 shadow-sm">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-sm text-label-sm">3</div>
+<h3 class="font-headline-md text-headline-md text-[18px] text-on-surface">Método de Pago</h3>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<button class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex items-center justify-center gap-2 text-on-surface-variant interactive-card">
+<span class="material-symbols-outlined text-[24px]">payments</span>
+<span class="font-label-md text-label-md">Efectivo</span>
+</button>
+<button class="bg-surface-container-low border-2 border-primary rounded-xl p-4 flex items-center justify-center gap-2 text-primary interactive-card">
+<span class="material-symbols-outlined text-[24px] icon-filled">account_balance</span>
+<span class="font-label-md text-label-md">PSE / Nequi</span>
+</button>
+<button class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex items-center justify-center gap-2 text-on-surface-variant interactive-card col-span-2">
+<span class="material-symbols-outlined text-[24px]">receipt_long</span>
+<span class="font-label-md text-label-md">Crédito Corporativo (Pre-aprobado)</span>
+</button>
+</div>
+</div>
+<!-- Step 4: Signatures -->
+<div class="bg-surface rounded-2xl border border-outline-variant p-5 shadow-sm mb-6">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-sm text-label-sm">4</div>
+<h3 class="font-headline-md text-headline-md text-[18px] text-on-surface">Firmas Digitales</h3>
+</div>
+<div class="space-y-6">
+<!-- Generator Signature -->
+<div>
+<div class="flex justify-between items-center mb-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Firma del Generador (Cliente)</label>
+<button class="font-label-sm text-label-sm text-error">Limpiar</button>
+</div>
+<div class="bg-surface-container-lowest border-2 border-dashed border-outline-variant rounded-xl h-32 flex items-center justify-center relative">
+<!-- Placeholder for signature stroke -->
+<svg class="absolute inset-0 w-full h-full text-on-surface pointer-events-none opacity-50" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 300 100">
+<path d="M 50 60 C 80 20, 100 80, 130 50 S 180 30, 200 60" stroke-linecap="round"></path>
+</svg>
+<span class="font-body-sm text-body-sm text-outline absolute bottom-2 right-3">Firme aquí</span>
+</div>
+</div>
+<!-- Driver Signature -->
+<div>
+<div class="flex justify-between items-center mb-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Firma del Transportador</label>
+<button class="font-label-sm text-label-sm text-error">Limpiar</button>
+</div>
+<div class="bg-surface-container-lowest border-2 border-dashed border-outline-variant rounded-xl h-32 flex items-center justify-center">
+<span class="font-body-sm text-body-sm text-outline absolute bottom-2 right-3">Firme aquí</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Final Action CTA -->
+<button class="w-full h-14 bg-primary hover:bg-primary/90 text-on-primary rounded-xl font-headline-md text-headline-md text-[18px] shadow-md flex items-center justify-center gap-2 transition-transform interactive-card mb-4">
+<span class="material-symbols-outlined" data-weight="fill">check_circle</span>
+                Completar Manifiesto
+            </button>
+</section>
+</main>
+<!-- Bottom Navigation Shell (JSON Driven) -->
+<nav class="bg-surface dark:bg-inverse-surface shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] shadow-lg fixed bottom-0 w-full z-50 rounded-t-xl">
+<div class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2">
+<!-- Home (Active state matching JSON exactly) -->
+<button class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-xl px-4 py-1 hover:bg-surface-container dark:hover:bg-surface-variant active:scale-90 transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined mb-1 icon-filled text-[24px]">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</button>
+<!-- Routes (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:bg-surface-container dark:hover:bg-surface-variant active:scale-90 transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined mb-1 text-[24px]">local_shipping</span>
+<span class="font-label-sm text-label-sm">Routes</span>
+</button>
+<!-- Scanner (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:bg-surface-container dark:hover:bg-surface-variant active:scale-90 transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined mb-1 text-[24px]">qr_code_scanner</span>
+<span class="font-label-sm text-label-sm">Scanner</span>
+</button>
+<!-- Profile (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:bg-surface-container dark:hover:bg-surface-variant active:scale-90 transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined mb-1 text-[24px]">account_circle</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</button>
+</div>
+</nav>
+</body></html>
